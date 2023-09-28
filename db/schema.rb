@@ -12,16 +12,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_928_165_217) do
+ActiveRecord::Schema[7.0].define(version: 20_230_928_192_847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
   create_table 'disbursements', force: :cascade do |t|
-    t.string 'reference'
     t.decimal 'amount', precision: 10, scale: 2
     t.bigint 'merchant_id', null: false
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
+    t.uuid 'reference'
     t.index ['merchant_id'], name: 'index_disbursements_on_merchant_id'
   end
 
