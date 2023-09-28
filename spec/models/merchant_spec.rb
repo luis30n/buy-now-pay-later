@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Merchant, type: :model do
   describe 'associations' do
     it { is_expected.to have_many(:disbursements).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:orders).dependent(:restrict_with_exception) }
   end
 
   describe 'validations' do
