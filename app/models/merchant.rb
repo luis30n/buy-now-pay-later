@@ -7,4 +7,5 @@ class Merchant < ApplicationRecord
   }
 
   has_many :disbursements, dependent: :restrict_with_exception
+  has_many :orders, dependent: :restrict_with_exception
 end
