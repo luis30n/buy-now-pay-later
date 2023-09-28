@@ -24,4 +24,26 @@ namespace :csv_import do
 
     Rails.logger.info("Imported #{Merchant.count} merchants.")
   end
+
+  desc 'Import orders from a CSV file'
+  task orders: :environment do
+    require 'csv'
+
+    return Rails.logger.info("There are already #{Order.count} in the database.") if Order.any?
+
+    Rails.logger.info('Importing orders from CSV...')
+
+    orders_file_path = Rails.root.join('data/orders.csv')
+    orders_attributes = []
+    CSV.foreach(orders_file_path, headers: true, col_sep: ';') do |order_row|
+      orders_attributes << {
+        merchant_id: Merchant.find_by(reference: order_row.fetch('merchant_reference')).id,
+        amount: order_row.fetch('amount'),
+        created_at: order_row.fetch('created_at')
+      }
+    end
+    Order.insert_all(orders_attributes)
+
+    Rails.logger.info("Imported #{Order.count} orders.")
+  end
 end
