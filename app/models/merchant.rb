@@ -5,4 +5,6 @@ class Merchant < ApplicationRecord
     daily: 'daily',
     weekly: 'weekly'
   }
+
+  has_many :disbursements, dependent: :restrict_with_exception
 end
