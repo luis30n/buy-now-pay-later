@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_928_192_847) do
+ActiveRecord::Schema[7.0].define(version: 20_230_930_092_117) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
 
@@ -23,6 +23,15 @@ ActiveRecord::Schema[7.0].define(version: 20_230_928_192_847) do
     t.datetime 'updated_at', null: false
     t.uuid 'reference'
     t.index ['merchant_id'], name: 'index_disbursements_on_merchant_id'
+  end
+
+  create_table 'fees', force: :cascade do |t|
+    t.decimal 'amount', precision: 10, scale: 2
+    t.bigint 'disbursement_id', null: false
+    t.string 'category', default: 'regular', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['disbursement_id'], name: 'index_fees_on_disbursement_id'
   end
 
   create_table 'merchants', force: :cascade do |t|
@@ -47,6 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 20_230_928_192_847) do
   end
 
   add_foreign_key 'disbursements', 'merchants'
+  add_foreign_key 'fees', 'disbursements'
   add_foreign_key 'orders', 'disbursements'
   add_foreign_key 'orders', 'merchants'
 end
