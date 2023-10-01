@@ -11,7 +11,7 @@ RSpec.describe Fee, type: :model do
     it 'defines a type enum' do
       expect(subject).to define_enum_for(:category).with_values(
         regular: 'regular',
-        monthly_min: 'monthly_min'
+        min_monthly: 'min_monthly'
       ).backed_by_column_of_type(:string)
     end
   end

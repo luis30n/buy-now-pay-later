@@ -14,6 +14,7 @@ module Services
         Disbursement.transaction do
           @disbursement = create_disbursement!
           create_regular_fee!
+          create_min_monthly_fee!
         end
         disbursement
       end
@@ -34,11 +35,23 @@ module Services
         Fee.create!(disbursement:, amount: regular_fee_amount, category: 'regular')
       end
 
+      def create_min_monthly_fee!
+        return unless disbursement.first_of_month?
+        return if merchant.pending_min_monthly_fee_amount(date:).zero?
+
+        Fee.create!(
+          disbursement:,
+          amount: merchant.pending_min_monthly_fee_amount(date:),
+          category: 'min_monthly'
+        )
+      end
+
       def disbursable_orders
         @disbursable_orders ||= merchant.disbursable_orders(date:)
       end
 
       def disbursement_amount
+        # TODO: Charge the min monthly fee
         total_amount - regular_fee_amount
       end
 

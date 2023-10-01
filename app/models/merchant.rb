@@ -13,6 +13,10 @@ class Merchant < ApplicationRecord
   has_many :disbursements, dependent: :restrict_with_exception
   has_many :orders, dependent: :restrict_with_exception
 
+  def pending_min_monthly_fee_amount(date:)
+    [minimum_monthly_fee - total_last_month_fee_amount(date), 0].max
+  end
+
   def disbursable_orders(date:)
     orders.undisbursed.where(
       'created_at >= ? AND created_at  < ?',

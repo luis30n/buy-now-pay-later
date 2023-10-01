@@ -3,7 +3,7 @@
 class Fee < ApplicationRecord
   enum category: {
     regular: 'regular',
-    monthly_min: 'monthly_min'
+    min_monthly: 'min_monthly'
   }
 
   belongs_to :disbursement

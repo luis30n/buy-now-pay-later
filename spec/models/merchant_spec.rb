@@ -59,4 +59,34 @@ RSpec.describe Merchant, type: :model do
       end
     end
   end
+
+  describe '#pending_min_monthly_fee_amount' do
+    subject(:merchant) { create(:merchant, minimum_monthly_fee: 100) }
+
+    let!(:disbursement1) do
+      create(:disbursement, merchant:, created_at: Date.parse('2023-09-10'))
+    end
+    let!(:fee1) do
+      create(:fee, disbursement: disbursement1, amount: 60, created_at: Date.parse('2023-09-10'))
+    end
+
+    context 'when the minimum monthly fee has been reached' do
+      let!(:disbursement2) do
+        create(:disbursement, merchant:, created_at: Date.parse('2023-09-10'))
+      end
+      let!(:fee2) do
+        create(:fee, disbursement: disbursement2, amount: 50, created_at: Date.parse('2023-09-10'))
+      end
+
+      it 'returns 0' do
+        expect(merchant.pending_min_monthly_fee_amount(date: Date.parse('2023-10-02'))).to eq 0
+      end
+    end
+
+    context 'when the minimum monthly fee has not been reached' do
+      it 'returns the pending min monthly fee' do
+        expect(merchant.pending_min_monthly_fee_amount(date: Date.parse('2023-10-02'))).to eq 40
+      end
+    end
+  end
 end
