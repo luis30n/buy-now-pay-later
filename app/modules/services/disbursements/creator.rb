@@ -27,12 +27,18 @@ module Services
         Disbursement.create!(
           orders: disbursable_orders,
           merchant:,
-          amount: disbursement_amount
+          amount: disbursement_amount,
+          created_at: date
         )
       end
 
       def create_regular_fee!
-        Fee.create!(disbursement:, amount: regular_fee_amount, category: 'regular')
+        Fee.create!(
+          disbursement:,
+          amount: regular_fee_amount,
+          category: 'regular',
+          created_at: date
+        )
       end
 
       def create_min_monthly_fee!
@@ -42,7 +48,8 @@ module Services
         Fee.create!(
           disbursement:,
           amount: merchant.pending_min_monthly_fee_amount(date:),
-          category: 'min_monthly'
+          category: 'min_monthly',
+          created_at: date
         )
       end
 
