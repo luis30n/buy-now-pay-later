@@ -26,4 +26,4 @@ end
 
 gem 'sidekiq', '~> 7.1'
 
-gem "sidekiq-cron", "~> 1.10"
+gem 'sidekiq-cron', '~> 1.10'

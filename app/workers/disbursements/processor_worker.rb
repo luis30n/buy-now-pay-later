@@ -4,7 +4,7 @@ module Disbursements
   class ProcessorWorker
     include Sidekiq::Worker
 
-    def perform(date: Date.today.to_s)
+    def perform(date = Date.today.to_s)
       @date = Date.parse(date)
 
       merchants.find_each(batch_size: 100) do |merchant|
