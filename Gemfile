@@ -23,3 +23,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.56'
 end
+
+gem 'sidekiq', '~> 7.1'
+
+gem "sidekiq-cron", "~> 1.10"

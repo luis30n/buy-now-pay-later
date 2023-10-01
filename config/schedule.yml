@@ -1,0 +1,4 @@
+disbursement_processor:
+  cron: 0 7 * * *
+  class: DisbursementProcessorWorker
+  queue: default
