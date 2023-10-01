@@ -25,7 +25,7 @@ RSpec.describe Disbursements::ProcessorWorker, type: :job do
       let(:tuesday_date) { '2023-09-26' }
 
       it 'initializes the disbursement creator for the daily merchants' do
-        disbursements_processor.perform(date: tuesday_date)
+        disbursements_processor.perform(tuesday_date)
 
         expect(disbursements_creator_class).to have_received(:new).with(
           date: Date.parse(tuesday_date), merchant: daily_merchant
@@ -33,7 +33,7 @@ RSpec.describe Disbursements::ProcessorWorker, type: :job do
       end
 
       it "initializes the disbursement creator for weekly merchants of the date's weekday" do
-        disbursements_processor.perform(date: tuesday_date)
+        disbursements_processor.perform(tuesday_date)
 
         expect(disbursements_creator_class).to have_received(:new).with(
           date: Date.parse(tuesday_date), merchant: tuesday_weekly_merchant
@@ -41,7 +41,7 @@ RSpec.describe Disbursements::ProcessorWorker, type: :job do
       end
 
       it 'calls the disbursement creator once per applicable merchant' do
-        disbursements_processor.perform(date: tuesday_date)
+        disbursements_processor.perform(tuesday_date)
 
         expect(disbursements_creator_mock).to(
           have_received(:call).exactly(applicable_merchants.size).times
