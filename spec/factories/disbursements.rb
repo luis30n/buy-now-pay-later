@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :disbursement do
-    reference { 'great-disbursement' }
+    reference { SecureRandom.uuid }
     amount { '90.9' }
     merchant { build(:merchant) }
   end

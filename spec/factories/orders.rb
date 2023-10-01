@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :order do
-    merchant { nil }
+    merchant { build(:merchant) }
     disbursement { nil }
     amount { '999' }
   end

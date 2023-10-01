@@ -8,6 +8,7 @@ require 'pry'
 require 'database_cleaner/active_record'
 
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include FactoryBot::Syntax::Methods
 
   config.before(:each) do
