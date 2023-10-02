@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: rails
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+    environment:
+      RAILS_LOG_TO_STDOUT: 1
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:sequra_development@db:5432/sequra_development
+      REDIS_URL: redis://redis:6379/1
+      DB_SETUP_ON_START: "true" 
+  db:
+    build:
+      dockerfile: Dockerfile.postgres 
+    container_name: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sequra_development
+      POSTGRES_DB: sequra_development
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  sidekiq:
+    build: .
+    container_name: sidekiq
+    environment:
+      REDIS_URL: redis://redis:6379/1
+    depends_on:
+      - web
+    command: bundle exec sidekiq
+
+volumes:
+  postgres_data:
