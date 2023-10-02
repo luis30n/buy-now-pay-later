@@ -5,7 +5,7 @@ namespace :csv_import do
   task merchants: :environment do
     require 'csv'
 
-    return Rails.logger.info("There are already #{Merchant.count} in the database.") if Merchant.any?
+    next Rails.logger.info("There are already #{Merchant.count} in the database.") if Merchant.any?
 
     Rails.logger.info('Importing merchants from CSV...')
 
@@ -29,15 +29,17 @@ namespace :csv_import do
   task orders: :environment do
     require 'csv'
 
-    return Rails.logger.info("There are already #{Order.count} in the database.") if Order.any?
+    next Rails.logger.info("There are already #{Order.count} in the database.") if Order.any?
 
     Rails.logger.info('Importing orders from CSV...')
 
     orders_file_path = Rails.root.join('data/orders.csv')
     orders_attributes = []
+    merchants_hash = Merchant.pluck(:reference, :id).to_h
+
     CSV.foreach(orders_file_path, headers: true, col_sep: ';') do |order_row|
       orders_attributes << {
-        merchant_id: Merchant.find_by(reference: order_row.fetch('merchant_reference')).id,
+        merchant_id: merchants_hash.fetch(order_row.fetch('merchant_reference')),
         amount: order_row.fetch('amount'),
         created_at: order_row.fetch('created_at')
       }
