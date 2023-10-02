@@ -1,0 +1,3 @@
+FROM postgres:12
+
+RUN echo "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" >> /docker-entrypoint-initdb.d/enable-uuid-ossp.sql
