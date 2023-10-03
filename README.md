@@ -9,10 +9,13 @@ For more context, please visit: https://sequra.github.io/backend-challenge/
 
 The project is configured to use docker and docker compose. 
 It has been tested with docker compose version v2.20.2-desktop.1 and docker version 24.0.6.
-
+To run the specs, you can simply use the following command:
+```bash
+docker compose up spec
+```
 To run the project, you can simply use the following command:
 ```bash
-docker compose up
+docker compose up web sidekiq
 ```
 This will run rails, sidekiq, redis and postgresql as docker containers. 
 The first run will take some minutes because the following steps are performed:
@@ -25,7 +28,7 @@ NOTE: A volume is used to save the state of the postgresql database service so t
 ```bash
   docker compose down # stop containers
   docker volume rm sequra_postgres_data # delete the DB volume
-  docker compose up --build # start the containers, forcing a re-build
+  docker compose up web sidekiq --build # start the containers, forcing a re-build
 ```
 # How to use this application
 
