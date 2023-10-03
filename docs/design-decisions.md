@@ -77,6 +77,6 @@ v.to_s('F')
 
 # Improvements
 - Indexes could be added on some columns. Example: the `reference` column on `disbursements` should be indexed, if disbursements are expected to be queried by their reference usually.
-- Error handling has been ignored. The rake tasks, services and methods implementations and tests have been focused on the happy path. Example: the rake tasks to import orders and merchants from the CSV files assume that the CSV file exists in hardcoded locations.
+- Error handling has been ignored. The rake tasks, services, methods implementations and tests have been focused on the happy path. Example: the rake tasks to import orders and merchants from the CSV files assume that the CSV file exists in hardcoded locations.
 - As stated in the challenge description, the minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to mark where this fee should be used.
 - The rake task to generate disbursements is quite slow. I don't consider this an issue because a docker volume is used to avoid having to do this every time the application is started. In a real scenario, processing past disbursements for months should not be necessary either. Anyway, it could be faster if we use Sidekiq for this and setup Sidekiq to run in parallel with, for example, 5 threads.
