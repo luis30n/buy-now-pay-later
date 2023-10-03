@@ -61,7 +61,7 @@ RSpec.describe Merchant, type: :model do
   end
 
   describe '#pending_min_monthly_fee_amount' do
-    subject(:merchant) { create(:merchant, minimum_monthly_fee: 100) }
+    subject(:merchant) { create(:merchant, live_on: live_on_date, minimum_monthly_fee: 100) }
 
     let!(:disbursement1) do
       create(:disbursement, merchant:, created_at: Date.parse('2023-09-10'))
@@ -69,23 +69,48 @@ RSpec.describe Merchant, type: :model do
     let!(:fee1) do
       create(:fee, disbursement: disbursement1, amount: 60, created_at: Date.parse('2023-09-10'))
     end
+    let(:live_on_date) { Date.parse('2022-10-10') }
+    let(:calculation_date)  { Date.parse('2023-10-02') }
 
-    context 'when the minimum monthly fee has been reached' do
-      let!(:disbursement2) do
-        create(:disbursement, merchant:, created_at: Date.parse('2023-09-10'))
-      end
-      let!(:fee2) do
-        create(:fee, disbursement: disbursement2, amount: 50, created_at: Date.parse('2023-09-10'))
+    context 'when the merchant is already live' do
+      context 'when the minimum monthly fee has been reached' do
+        let!(:disbursement2) do
+          create(:disbursement, merchant:, created_at: Date.parse('2023-09-10'))
+        end
+        let!(:fee2) do
+          create(
+            :fee,
+            disbursement: disbursement2,
+            amount: 50,
+            created_at: Date.parse('2023-09-10')
+          )
+        end
+
+        it 'returns 0' do
+          expect(merchant.pending_min_monthly_fee_amount(date: calculation_date)).to eq 0
+        end
       end
 
-      it 'returns 0' do
-        expect(merchant.pending_min_monthly_fee_amount(date: Date.parse('2023-10-02'))).to eq 0
+      context 'when the minimum monthly fee has not been reached' do
+        it 'returns the pending min monthly fee' do
+          expect(merchant.pending_min_monthly_fee_amount(date: calculation_date)).to eq 40
+        end
       end
     end
 
-    context 'when the minimum monthly fee has not been reached' do
+    context 'when the merchant live on date is in the same month' do
+      let(:live_on_date) { calculation_date - 1.days }
+
       it 'returns the pending min monthly fee' do
-        expect(merchant.pending_min_monthly_fee_amount(date: Date.parse('2023-10-02'))).to eq 40
+        expect(merchant.pending_min_monthly_fee_amount(date: calculation_date)).to eq 0
+      end
+    end
+
+    context 'when the merchant is not live yet' do
+      let(:live_on_date) { Date.parse('2024-10-10') }
+
+      it 'returns the pending min monthly fee' do
+        expect(merchant.pending_min_monthly_fee_amount(date: calculation_date)).to eq 0
       end
     end
   end

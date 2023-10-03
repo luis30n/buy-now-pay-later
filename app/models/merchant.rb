@@ -14,6 +14,8 @@ class Merchant < ApplicationRecord
   has_many :orders, dependent: :restrict_with_exception
 
   def pending_min_monthly_fee_amount(date:)
+    return 0 unless date.beginning_of_month > live_on.beginning_of_month
+
     [minimum_monthly_fee - total_last_month_fee_amount(date), 0].max
   end
 
