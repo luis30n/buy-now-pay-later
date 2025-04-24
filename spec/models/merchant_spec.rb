@@ -70,7 +70,7 @@ RSpec.describe Merchant, type: :model do
       create(:fee, disbursement: disbursement1, amount: 60, created_at: Date.parse('2023-09-10'))
     end
     let(:live_on_date) { Date.parse('2022-10-10') }
-    let(:calculation_date)  { Date.parse('2023-10-02') }
+    let(:calculation_date) { Date.parse('2023-10-02') }
 
     context 'when the merchant is already live' do
       context 'when the minimum monthly fee has been reached' do

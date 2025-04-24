@@ -23,7 +23,7 @@ RSpec.shared_examples 'a successful disbursement creation' do
   end
 end
 
-RSpec.describe Services::Disbursements::Creator do
+RSpec.describe Disbursements::Creator do
   subject(:creator) do
     described_class.new(date:, merchant:)
   end

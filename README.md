@@ -32,7 +32,7 @@ NOTE: A volume is used to save the state of the postgresql database service so t
 ```
 # How to use this application
 
-Once the application is up and running and the data has already been imported and processed (you can check the logs to verify this), the app can be used to get stats about the disbursements calculated for 2022 and 2023. This information is already included in `data/stats.csv`. To test the behavior, the CSV file can be deleted and a rake task can be invoked to generate the stats:
+Once the application is up and running and the data has already been imported and processed (you can check the logs or http://localhost:3000/sidekiq to verify this), the app can be used to get stats about the disbursements calculated for 2022 and 2023. This information is already included in `data/stats.csv`. To test the behavior, the CSV file can be deleted and a rake task can be invoked to generate the stats:
 ```bash
   rm data/stats.csv
   docker exec rails bundle exec rake disbursements:generate_stats
@@ -40,9 +40,10 @@ Once the application is up and running and the data has already been imported an
 Once the task has finished, you can check the stats at `data/stats.csv`.
 It should look like this:
 | Year   | Number of disbursements | Amount disbursed to merchants | Amount of order fees | Number of monthly fees charged (From minimum monthly fee) | Amount of monthly fee charged (From minimum monthly fee) |
-| ------ | ----------------------- | ------------------------------ | -------------------- | ---------------------------------------------------------- | -------------------------------------------------------- |
-| 2022 | 3502                    | 16121669.1 €                  | 149977.24 €         | 8                                                           | 157.31 €                                                |
-| 2023 | 1354                    | 17893192.67 €                 | 164532.83 €         | 7                                                           | 114.26 €                                                |
+| ------ | ----------------------- | ---------------------------- | -------------------- | -------------------------------------------------------- | ------------------------------------------------------- |
+| 2022   | 4522                    | 36,929,320.27 €              | 333,677.15 €         | 25                                                       | 471.56 €                                                 |
+| 2023   | 12086                   | 188,564,599.51 €             | 1,709,260.98 €       | 165                                                      | 2,667.07 €                                               |
+                                          |
 
 NOTE: The minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to indicate where this fee should be taken into account.
 

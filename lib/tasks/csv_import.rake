@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 namespace :csv_import do
   desc 'Import merchants from a CSV file'
   task merchants: :environment do
-    require 'csv'
-
     next Rails.logger.info("There are already #{Merchant.count} in the database.") if Merchant.any?
 
     Rails.logger.info('Importing merchants from CSV...')
@@ -27,8 +27,6 @@ namespace :csv_import do
 
   desc 'Import orders from a CSV file'
   task orders: :environment do
-    require 'csv'
-
     next Rails.logger.info("There are already #{Order.count} in the database.") if Order.any?
 
     Rails.logger.info('Importing orders from CSV...')
@@ -44,7 +42,12 @@ namespace :csv_import do
         created_at: order_row.fetch('created_at')
       }
     end
-    Order.insert_all(orders_attributes)
+
+    order_batches = orders_attributes.each_slice(100_000)
+    order_batches.with_index do |orders_batch, index|
+      Rails.logger.info("Inserting #{orders_batch.size} orders. Batch ##{index + 1} of #{order_batches.size}...")
+      Order.insert_all(orders_batch)
+    end
 
     Rails.logger.info("Imported #{Order.count} orders.")
   end

@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   web:
     build: .
@@ -10,19 +8,19 @@ services:
       - db
       - redis
     volumes:
-      - .:/app
+      - ./data/.:/app/data/
     environment:
       RAILS_LOG_TO_STDOUT: 1
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:sequra_development@db:5432/sequra_development
       REDIS_URL: redis://redis:6379/1
-      DB_SETUP_ON_START: "true" 
+      DB_SETUP_ON_START: "true"
   db:
     build:
-      dockerfile: Dockerfile.postgres 
+      dockerfile: Dockerfile.postgres
     container_name: db
     volumes:
-      - postgres_data:/var/lib/postgresql/data  
+      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: sequra_development
@@ -41,14 +39,13 @@ services:
     container_name: sidekiq
     environment:
       REDIS_URL: redis://redis:6379/1
+      DATABASE_URL: postgres://postgres:sequra_development@db:5432/sequra_development
     depends_on:
       - web
     command: bundle exec sidekiq
   spec:
     build: .
     container_name: spec
-    volumes:
-      - .:/app
     environment:
       RAILS_LOG_TO_STDOUT: 1
       RAILS_ENV: test
@@ -59,11 +56,11 @@ services:
     entrypoint: /app/entrypoint-test.sh
 
   db-test:
-    build: 
-      dockerfile: Dockerfile.postgres   
+    build:
+      dockerfile: Dockerfile.postgres
     container_name: db-test
     volumes:
-      - postgres_test_data:/var/lib/postgresql/data  
+      - postgres_test_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: sequra_test
