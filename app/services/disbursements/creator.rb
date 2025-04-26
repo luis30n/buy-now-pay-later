@@ -45,11 +45,11 @@ module Disbursements
 
     def create_min_monthly_fee!
       return unless disbursement.first_of_month?
-      return if merchant.pending_min_monthly_fee_amount(date:).zero?
+      return if min_monthly_fee_amount.zero?
 
       Fee.create!(
         disbursement:,
-        amount: merchant.pending_min_monthly_fee_amount(date:),
+        amount: min_monthly_fee_amount,
         category: 'min_monthly',
         created_at: date
       )
@@ -65,9 +65,14 @@ module Disbursements
     end
 
     def regular_fee_amount
-      @regular_fee_amount ||= disbursable_orders.reduce(BigDecimal('0.00')) do |sum, order|
-        sum + order.fee_amount
-      end
+      @regular_fee_amount ||= ::Fees::CalculateRegularAmount.new(orders: disbursable_orders).call
+    end
+
+    def min_monthly_fee_amount
+      @min_monthly_fee_amount ||= ::Merchants::CalculateMinMonthlyFeeAmount.new(
+        merchant:,
+        date:
+      ).call
     end
 
     def total_amount

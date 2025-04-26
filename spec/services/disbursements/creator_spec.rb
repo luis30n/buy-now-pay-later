@@ -45,12 +45,30 @@ RSpec.describe Disbursements::Creator do
     let(:expected_disbursement_amount) { 150.54 }
     let(:expected_regular_fee_amount) { 1.46 }
     let(:expected_n_fees_created) { 1 }
+    let(:calculate_min_monthly_fee_service_mock) do
+      instance_double(
+        ::Merchants::CalculateMinMonthlyFeeAmount,
+        call: min_monthly_fee_amount
+      )
+    end
+    let(:min_monthly_fee_amount) { 100 }
+    let(:calculate_regular_amount_service_mock) do
+      instance_double(
+        ::Fees::CalculateRegularAmount,
+        call: expected_regular_fee_amount
+      )
+    end
+
+    before do
+      allow(::Merchants::CalculateMinMonthlyFeeAmount).to receive(:new).and_return(
+        calculate_min_monthly_fee_service_mock
+      )
+      allow(::Fees::CalculateRegularAmount).to receive(:new).and_return(calculate_regular_amount_service_mock)
+    end
 
     context 'when the disbursement is the first of the month' do
       context 'when the minimum monthly fee amount has been reached' do
-        before do
-          allow(merchant).to receive(:pending_min_monthly_fee_amount).and_return(0)
-        end
+        let(:min_monthly_fee_amount) { 0 }
 
         it_behaves_like 'a successful disbursement creation'
       end
@@ -62,17 +80,13 @@ RSpec.describe Disbursements::Creator do
         let(:expected_regular_fee_amount) { 3.97 }
         let(:expected_n_fees_created) { 2 }
 
-        before do
-          allow(merchant).to receive(:pending_min_monthly_fee_amount).and_return(100)
-        end
-
         it_behaves_like 'a successful disbursement creation'
 
         it 'sets the right min monthly fee amount' do
           disbursement = creator.call
           min_monthly_fee = disbursement.fees.find_by(category: 'min_monthly')
 
-          expect(min_monthly_fee.amount).to eq(100)
+          expect(min_monthly_fee.amount).to eq(min_monthly_fee_amount)
         end
       end
     end
