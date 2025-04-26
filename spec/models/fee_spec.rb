@@ -10,8 +10,8 @@ RSpec.describe Fee, type: :model do
   describe 'validations' do
     it 'defines a type enum' do
       expect(subject).to define_enum_for(:category).with_values(
-        regular: 'regular',
-        min_monthly: 'min_monthly'
+        regular: Fee::REGULAR_CATEGORY,
+        min_monthly: Fee::MIN_MONTHLY_CATEGORY
       ).backed_by_column_of_type(:string)
     end
   end

@@ -21,11 +21,11 @@ namespace :disbursements do
               COUNT(*) as total_disbursements,
               SUM(amount) as total_disbursement_amount")
 
-    regular_fees_query = Fee.where(category: 'regular')
+    regular_fees_query = Fee.where(category: Fee::REGULAR_CATEGORY)
                             .group('EXTRACT(YEAR FROM created_at)')
                             .select("EXTRACT(YEAR FROM created_at) as year,
                        SUM(amount) as total_regular_fee_amount")
-    min_monthly_fees_query = Fee.where(category: 'min_monthly')
+    min_monthly_fees_query = Fee.where(category: Fee::MIN_MONTHLY_CATEGORY)
                                 .group('EXTRACT(YEAR FROM created_at)')
                                 .select("EXTRACT(YEAR FROM created_at) as year,
                             COUNT(*) as total_monthly_fees_count,

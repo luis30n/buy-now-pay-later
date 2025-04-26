@@ -10,30 +10,51 @@ RSpec.describe Disbursement, type: :model do
   end
 
   describe '#first_of_month?' do
-    subject(:disbursement) do
-      create(:disbursement, merchant:, created_at: Date.parse('2023-09-03'))
-    end
-    let!(:older_disbursement_from_merchant) do
-      create(:disbursement, merchant:, created_at: Date.parse('2023-09-05'))
-    end
-    let!(:earlier_disbursement_from_other_merchant) do
-      create(:disbursement, merchant: build(:merchant), created_at: Date.parse('2023-09-01'))
-    end
-    let(:merchant) { create(:merchant) }
+    let(:disbursement) { create(:disbursement, merchant:) }
 
-    context 'when it is the first of the month for its merchant' do
-      it 'returns true' do
-        expect(disbursement.first_of_month?).to eq(true)
+    subject { disbursement }
+
+    context 'when merchant is weekly' do
+      let(:merchant) { create(:merchant, disbursement_frequency: Merchant::WEEKLY_FREQUENCY) }
+
+      context 'when date is exactly the first day of the month' do
+        it 'returns true' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-01'))).to eq(true)
+        end
+      end
+
+      context 'when date is within the first 7 days of the month' do
+        it 'returns true' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-03'))).to eq(true)
+        end
+      end
+
+      context 'when date is after the first 7 days of the month' do
+        it 'returns false' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-08'))).to eq(false)
+        end
       end
     end
 
-    context 'when it is not the first of the month for its merchant' do
-      let!(:earlier_disbursement_from_merchant) do
-        create(:disbursement, merchant:, created_at: Date.parse('2023-09-01'))
+    context 'when merchant is daily' do
+      let(:merchant) { create(:merchant, disbursement_frequency: Merchant::DAILY_FREQUENCY) }
+
+      context 'when date is exactly the first day of the month' do
+        it 'returns true' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-01'))).to eq(true)
+        end
       end
 
-      it 'returns false' do
-        expect(disbursement.first_of_month?).to eq(false)
+      context 'when date is within the first 7 days of the month' do
+        it 'returns false' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-03'))).to eq(false)
+        end
+      end
+
+      context 'when date is after the first 7 days of the month' do
+        it 'returns false' do
+          expect(subject.first_of_month?(date: Date.parse('2023-09-08'))).to eq(false)
+        end
       end
     end
   end

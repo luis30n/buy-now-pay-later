@@ -39,12 +39,11 @@ Once the application is up and running and the data has already been imported an
 ```
 Once the task has finished, you can check the stats at `data/stats.csv`.
 It should look like this:
-| Year   | Number of disbursements | Amount disbursed to merchants | Amount of order fees | Number of monthly fees charged (From minimum monthly fee) | Amount of monthly fee charged (From minimum monthly fee) |
-| ------ | ----------------------- | ---------------------------- | -------------------- | -------------------------------------------------------- | ------------------------------------------------------- |
-| 2022   | 4522                    | 36,929,320.27 €              | 333,677.15 €         | 25                                                       | 471.56 €                                                 |
-| 2023   | 12086                   | 188,564,599.51 €             | 1,709,260.98 €       | 165                                                      | 2,667.07 €                                               |
-                                          |
 
+| Year   | Number of disbursements | Amount disbursed to merchants | Amount of order fees | Number of monthly fees charged (From minimum monthly fee) | Amount of monthly fee charged (From minimum monthly fee) |
+| ------ | ----------------------- | ----------------------------- | -------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| 2023   | 12086                   | 188,564,599.51 €              | 1,709,260.98 €        | 97                                                        | 1,034.63 €                                                 |
+| 2022   | 4522                    | 36,929,320.27 €               | 333,677.15 €          | 15                                                        | 259.80 €                                                   |
 NOTE: The minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to indicate where this fee should be taken into account.
 
 

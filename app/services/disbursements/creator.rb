@@ -38,25 +38,28 @@ module Disbursements
       Fee.create!(
         disbursement:,
         amount: regular_fee_amount,
-        category: 'regular',
+        category: Fee::REGULAR_CATEGORY,
         created_at: date
       )
     end
 
     def create_min_monthly_fee!
-      return unless disbursement.first_of_month?
+      return unless disbursement.first_of_month?(date:)
       return if min_monthly_fee_amount.zero?
 
       Fee.create!(
         disbursement:,
         amount: min_monthly_fee_amount,
-        category: 'min_monthly',
+        category: Fee::MIN_MONTHLY_CATEGORY,
         created_at: date
       )
     end
 
     def disbursable_orders
-      @disbursable_orders ||= merchant.disbursable_orders(date:)
+      @disbursable_orders ||= ::Merchants::DisbursableOrdersQuery.new(
+        merchant:,
+        date:
+      ).call
     end
 
     def disbursement_amount

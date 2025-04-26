@@ -5,11 +5,9 @@ class Disbursement < ApplicationRecord
   has_many :orders, dependent: :restrict_with_exception
   has_many :fees, dependent: :restrict_with_exception
 
-  def first_of_month?
-    merchant.disbursements.where(
-      'created_at >= ? AND created_at < ?',
-      created_at.beginning_of_month,
-      created_at
-    ).empty?
+  def first_of_month?(date:)
+    return true if date == date.beginning_of_month
+    
+    date < date.beginning_of_month + 7.days && merchant.disbursement_frequency == Merchant::WEEKLY_FREQUENCY
   end
 end

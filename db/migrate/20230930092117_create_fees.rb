@@ -5,7 +5,7 @@ class CreateFees < ActiveRecord::Migration[7.0]
     create_table :fees do |t|
       t.decimal :amount, precision: 10, scale: 2
       t.references :disbursement, null: false, foreign_key: true
-      t.string :category, null: false, default: 'regular'
+      t.string :category, null: false, default: Fee::REGULAR_CATEGORY
       t.timestamps
     end
   end

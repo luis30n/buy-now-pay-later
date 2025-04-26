@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :fee do
     amount { '9.99' }
     disbursement { build(:disbursement) }
-    category { 'regular' }
+    category { Fee::REGULAR_CATEGORY }
   end
 end
