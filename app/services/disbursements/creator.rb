@@ -68,7 +68,7 @@ module Disbursements
     end
 
     def regular_fee_amount
-      @regular_fee_amount ||= ::Fees::CalculateRegularAmount.new(orders: disbursable_orders).call
+      @regular_fee_amount ||= ::Orders::CalculateRegularFeeAmount.new(orders: disbursable_orders).call
     end
 
     def min_monthly_fee_amount

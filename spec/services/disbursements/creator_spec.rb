@@ -46,12 +46,12 @@ module Disbursements
       instance_double(Merchants::DisbursableOrdersQuery, call: disbursable_orders_relation_mock)
     end
     let(:calculate_regular_fee_mock) do
-      instance_double(Fees::CalculateRegularAmount, call: regular_fee_amount)
+      instance_double(Orders::CalculateRegularFeeAmount, call: regular_fee_amount)
     end
     let(:calculate_min_monthly_fee_mock) do
       instance_double(Merchants::CalculateMinMonthlyFeeAmount, call: min_monthly_fee_amount)
     end
-    let(:regular_fee_amount) { BigDecimal('5') }
+    let(:regular_fee_amount) { BigDecimal('5.00') }
     let(:expected_disbursement_amount) { BigDecimal('295.0') }
     let(:min_monthly_fee_amount) { 0 }
     let(:disbursable_orders_amounts) do
@@ -63,23 +63,24 @@ module Disbursements
         .with(merchant:, date:)
         .and_return(disbursable_orders_query_mock)
 
-      allow(Fees::CalculateRegularAmount).to receive(:new)
+      allow(Orders::CalculateRegularFeeAmount).to receive(:new)
         .with(orders: disbursable_orders_relation_mock)
         .and_return(calculate_regular_fee_mock)
 
       allow(Merchants::CalculateMinMonthlyFeeAmount).to receive(:new)
         .with(merchant:, date:)
         .and_return(calculate_min_monthly_fee_mock)
+
       allow(disbursable_orders_relation_mock).to receive(:pluck)
         .with(:amount)
         .and_return(disbursable_orders_amounts)
     end
 
     describe '#call' do
+      it_behaves_like 'a successful disbursement creation'
+
       context 'when min monthly fee amount is 0' do
         let(:min_monthly_fee_amount) { 0 }
-
-        it_behaves_like 'a successful disbursement creation'
 
         it 'does not create the min monthly fee' do
           expect { creator.call }.not_to change(Fee.where(category: Fee::MIN_MONTHLY_CATEGORY), :count)

@@ -30,28 +30,4 @@ RSpec.describe Order, type: :model do
       end
     end
   end
-
-  describe '#fee_amount' do
-    subject(:order) { create(:order, amount:) }
-    context 'when amount is lower than 50' do
-      let(:amount) { 45.34 }
-      let(:expected_fee_amount) { 0.45 }
-
-      it_behaves_like 'a correct fee amount calculation'
-    end
-
-    context 'when the total amount is between 50 and 300' do
-      let(:amount) { 144.87 }
-      let(:expected_fee_amount) { 1.38 }
-
-      it_behaves_like 'a correct fee amount calculation'
-    end
-
-    context 'when the total amount is higher or equal to 300' do
-      let(:amount) { 452.97 }
-      let(:expected_fee_amount) { 3.85 }
-
-      it_behaves_like 'a correct fee amount calculation'
-    end
-  end
 end
