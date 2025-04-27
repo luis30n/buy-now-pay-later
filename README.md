@@ -8,7 +8,7 @@ For more context, please visit: https://sequra.github.io/backend-challenge/
 # How to set up and run
 
 The project is configured to use docker and docker compose. 
-It has been tested with docker compose version v2.20.2-desktop.1 and docker version 24.0.6.
+It has been tested with docker version 28.0.4.
 To run the specs, you can simply use the following command:
 ```bash
 docker compose up spec
@@ -26,8 +26,7 @@ The first run will take some minutes because the following steps are performed:
 
 NOTE: A volume is used to save the state of the postgresql database service so that, once set up, these steps are not necessary after a restart. If you want, for some reason, you would like to trigger the set up from the begginining, you can use the following commands:
 ```bash
-  docker compose down # stop containers
-  docker volume rm sequra_postgres_data # delete the DB volume
+  docker compose down --volumes # stop containers and delete the volumes
   docker compose up web sidekiq --build # start the containers, forcing a re-build
 ```
 # How to use this application
@@ -44,7 +43,8 @@ It should look like this:
 | ------ | ----------------------- | ----------------------------- | -------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
 | 2023   | 12086                   | 188,564,599.51 €              | 1,709,260.98 €        | 97                                                        | 1,034.63 €                                                 |
 | 2022   | 4522                    | 36,929,320.27 €               | 333,677.15 €          | 15                                                        | 259.80 €                                                   |
-NOTE: The minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to indicate where this fee should be taken into account.
+
+NOTE: The minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to indicate where this fee should be taken into consideration.
 
 
 # Design Decisions

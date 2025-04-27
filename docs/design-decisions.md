@@ -50,7 +50,6 @@ irb(main):006:0> Sidekiq::Cron::Job.find('disbursement_processor')
  @status="enabled",
  @symbolize_args=false>
 ```
-If needed, this worker could be used to schedule the creation of disbursements in a separate sidekiq queue, so that disbursements are created in paralell, and not sequentually, which should speed up the calculation process.
 
 # Financial calculations
 - Ruby `BigDecimal` objects have been used to perform financial calculations. `BigDecimal` are slower than `Float` objects, but provide higher precision and control over the number of decimals to use in calculations. `Float` objects are typically used in Ruby to represent decimals but, since they use binary floating-point representation, `Float` objects inherently have rounding errors due to the inability to represent certain decimal values precisely. Example:
@@ -79,4 +78,3 @@ v.to_s('F')
 - Indexes could be added on some columns. Example: the `reference` column on `disbursements` should be indexed, if disbursements are expected to be queried by their reference usually.
 - Error handling has been ignored. The rake tasks, services, methods implementations and tests have been focused on the happy path. Example: the rake tasks to import orders and merchants from the CSV files assume that the CSV file exists in hardcoded locations.
 - As stated in the challenge description, the minimum monthly fee calculations have not been substracted from disbursements. A TODO comment has been added to mark where this fee should be used.
-- The rake task to generate disbursements is quite slow. I don't consider this an issue because a docker volume is used to avoid having to do this every time the application is started. In a real scenario, processing past disbursements for months should not be necessary either. Anyway, it could be faster if we use Sidekiq for this and setup Sidekiq to run in parallel with, for example, 5 threads.
